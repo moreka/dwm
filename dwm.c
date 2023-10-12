@@ -205,6 +205,7 @@ static void setlayout(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setup(void);
 static void seturgent(Client *c, int urg);
+static void sighup(int unused);
 static void showhide(Client *c);
 static void spawn(const Arg *arg);
 static void tag(const Arg *arg);
@@ -263,6 +264,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[UnmapNotify] = unmapnotify
 };
 static Atom wmatom[WMLast], netatom[NetLast];
+static int restart = 0;
 static int running = 1;
 static Cur *cursor[CurLast];
 static Clr **scheme;
@@ -1283,6 +1285,7 @@ propertynotify(XEvent *e)
 void
 quit(const Arg *arg)
 {
+  if (arg->i) restart = 1;
 	running = 0;
 }
 
@@ -1580,6 +1583,12 @@ setup(void)
 	/* clean up any zombies (inherited from .xinitrc etc) immediately */
 	while (waitpid(-1, NULL, WNOHANG) > 0);
 
+  struct sigaction sahup;
+  sigemptyset(&sahup.sa_mask);
+  sahup.sa_flags = 0;
+  sahup.sa_handler = sighup;
+  sigaction(SIGHUP, &sahup, NULL);
+
 	/* init screen */
 	screen = DefaultScreen(dpy);
 	sw = DisplayWidth(dpy, screen);
@@ -1651,6 +1660,13 @@ seturgent(Client *c, int urg)
 	wmh->flags = urg ? (wmh->flags | XUrgencyHint) : (wmh->flags & ~XUrgencyHint);
 	XSetWMHints(dpy, c->win, wmh);
 	XFree(wmh);
+}
+
+void
+sighup(int unused)
+{
+  Arg a = {.i = 1};
+  quit(&a);
 }
 
 void
@@ -2215,6 +2231,7 @@ main(int argc, char *argv[])
 #endif /* __OpenBSD__ */
 	scan();
 	run();
+  if (restart) execvp(argv[0], argv);
 	cleanup();
 	XCloseDisplay(dpy);
 	return EXIT_SUCCESS;
