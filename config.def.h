@@ -66,6 +66,8 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
+static const char scratchpadname[] = "scratchpad";
+static const char *scratchpadcmd[] = { "alacritty", "-T", scratchpadname, "--option", "window.dimensions.columns=120", "--option", "window.dimensions.lines=34", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -94,6 +96,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
   { MODKEY,                       XK_u,      focusurgent,    {0} },
+	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
@@ -106,7 +109,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} },
 
-  { MODKEY,                       XK_x,      spawn,          {.v = (const char*[]){ "i3-lock", NULL } } },
+  { MODKEY,                       XK_x,      spawn,          {.v = (const char*[]){ "i3lock", "-c", "1f1f1fff", NULL } } },
 
   { MODKEY,	                  		XK_w,	     spawn,          {.v = (const char*[]){ "firefox-bin", NULL } } },
 
