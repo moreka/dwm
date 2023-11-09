@@ -10,7 +10,7 @@ static const unsigned int systrayspacing = 2;   /* systray spacing */
 static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray        = 1;        /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
-static const int topbar             = 1;        /* 0 means bottom bar */
+static const int topbar             = 0;        /* 0 means bottom bar */
 static const char *fonts[]          = { "CommitMono:size=10" };
 static const char dmenufont[]       = "CommitMono:size=10";
 static const char col_gray1[]       = "#222222";
@@ -18,6 +18,7 @@ static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
+static const char col_green[]       = "#228C22";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
@@ -112,8 +113,11 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} },
 
   { MODKEY,                       XK_x,      spawn,          {.v = (const char*[]){ "i3lock", "-c", "1f1f1fff", NULL } } },
+  { MODKEY,                       XK_z,      spawn,          {.v = (const char*[]){ "rofi", "-show", "window", "-config", "~/.config/rofi.conf", NULL } } },
 
   { MODKEY,	                  		XK_w,	     spawn,          {.v = (const char*[]){ "firefox-bin", NULL } } },
+  { MODKEY,                       XK_e,      spawn,          {.v = (const char*[]){ "st", "-e", "neomutt", NULL } } },
+  { MODKEY,                       XK_s,      spawn,          {.v = (const char*[]){ "pdf-select", NULL } } },
 
   {0,                             XK_Print,  spawn,          SHCMD("maim pic-full-$(date '+%y%m%d-%H%M-%S').png") },
 	{ MODKEY,                       XK_Print,  spawn,          {.v = (const char*[]){ "maimpick", NULL } } },
