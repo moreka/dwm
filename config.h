@@ -11,14 +11,49 @@ static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display 
 static const int showsystray        = 1;        /* 0 means no systray */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 0;        /* 0 means bottom bar */
-static const char *fonts[]          = { "CommitMono:size=10" };
-static const char dmenufont[]       = "CommitMono:size=10";
+static const char *fonts[]          = { "Dejavu Sans Mono:size=10", "Symbols Nerd Font:size=10", "Noto Color Emoji:size=10" };
+static const char dmenufont[]       = "Dejavu Sans Mono:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
 static const char col_gray4[]       = "#eeeeee";
 static const char col_cyan[]        = "#005577";
-static const char col_green[]       = "#228C22";
+
+static char termcol0[] = "#000000"; /* black   */
+static char termcol1[] = "#ff0000"; /* red     */
+static char termcol2[] = "#33ff00"; /* green   */
+static char termcol3[] = "#ff0099"; /* yellow  */
+static char termcol4[] = "#0066ff"; /* blue    */
+static char termcol5[] = "#cc00ff"; /* magenta */
+static char termcol6[] = "#00ffff"; /* cyan    */
+static char termcol7[] = "#d0d0d0"; /* white   */
+static char termcol8[]  = "#808080"; /* black   */
+static char termcol9[]  = "#ff0000"; /* red     */
+static char termcol10[] = "#33ff00"; /* green   */
+static char termcol11[] = "#ff0099"; /* yellow  */
+static char termcol12[] = "#0066ff"; /* blue    */
+static char termcol13[] = "#cc00ff"; /* magenta */
+static char termcol14[] = "#00ffff"; /* cyan    */
+static char termcol15[] = "#ffffff"; /* white   */
+static char *termcolor[] = {
+  termcol0,
+  termcol1,
+  termcol2,
+  termcol3,
+  termcol4,
+  termcol5,
+  termcol6,
+  termcol7,
+  termcol8,
+  termcol9,
+  termcol10,
+  termcol11,
+  termcol12,
+  termcol13,
+  termcol14,
+  termcol15,
+};
+
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
@@ -36,6 +71,7 @@ static const Rule rules[] = {
 	/* class      instance    title       tags mask     isfloating   monitor */
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+  { "zoom",     NULL,       NULL,       0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -113,11 +149,10 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} },
 
   { MODKEY,                       XK_x,      spawn,          {.v = (const char*[]){ "i3lock", "-c", "1f1f1fff", NULL } } },
-  { MODKEY,                       XK_z,      spawn,          {.v = (const char*[]){ "rofi", "-show", "window", "-config", "~/.config/rofi.conf", NULL } } },
+  { MODKEY,                       XK_z,      spawn,          {.v = (const char*[]){ "rofi", "-show", "window", NULL } } },
 
-  { MODKEY,	                  		XK_w,	     spawn,          {.v = (const char*[]){ "firefox-bin", NULL } } },
-  { MODKEY,                       XK_e,      spawn,          {.v = (const char*[]){ "st", "-e", "neomutt", NULL } } },
-  { MODKEY,                       XK_s,      spawn,          {.v = (const char*[]){ "pdf-select", NULL } } },
+  { MODKEY,	                  		XK_w,	     spawn,          {.v = (const char*[]){ "firefox", NULL } } },
+  { MODKEY,                       XK_e,      spawn,          {.v = (const char*[]){ "alacritty", "-e", "neomutt", NULL } } },
 
   {0,                             XK_Print,  spawn,          SHCMD("maim pic-full-$(date '+%y%m%d-%H%M-%S').png") },
 	{ MODKEY,                       XK_Print,  spawn,          {.v = (const char*[]){ "maimpick", NULL } } },
@@ -125,6 +160,11 @@ static const Key keys[] = {
   { 0, XF86XK_AudioPrev,    spawn,    SHCMD("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous") },
   { 0, XF86XK_AudioNext,    spawn,    SHCMD("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next") },
   { 0, XF86XK_AudioPlay,    spawn,    SHCMD("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause") },
+
+  { 0, XF86XK_AudioRaiseVolume,  spawn,    SHCMD("pactl set-sink-volume @DEFAULT_SINK@ +10% && kill -42 $(pidof dwmblocks)") },
+  { 0, XF86XK_AudioLowerVolume,  spawn,    SHCMD("pactl set-sink-volume @DEFAULT_SINK@ -10% && kill -42 $(pidof dwmblocks)") },
+  { 0, XF86XK_AudioMute,         spawn,    SHCMD("pactl set-sink-mute @DEFAULT_SINK@ toggle && kill -42 $(pidof dwmblocks)") },
+  { 0, XF86XK_AudioMicMute,      spawn,    SHCMD("pactl set-source-mute @DEFAULT_SOURCE@ toggle && kill -40 $(pidof dwmblocks)") },
 
   { 0, XF86XK_MonBrightnessUp,   spawn,    SHCMD("xbacklight -inc 5") },
   { 0, XF86XK_MonBrightnessDown, spawn,    SHCMD("xbacklight -dec 5") },
