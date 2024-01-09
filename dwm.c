@@ -851,7 +851,7 @@ drawbar(Monitor *m)
 		// drw_setscheme(drw, scheme[SchemeNorm]);
 		// tw = TEXTW(stext) - lrpad / 2 + 2; /* 2px extra right padding */
 		// drw_text(drw, m->ww - tw - stw, 0, tw, bh, lrpad / 2 - 2, stext, 0);
-    tw = m->ww - drawstatusbar(m, bh, stext) - stw;
+    tw = m->ww - drawstatusbar(m, bh, stext);
 	}
 
 	resizebarwin(m);
@@ -937,7 +937,8 @@ drawstatusbar(Monitor *m, int bh, char* stext) {
 	text = p;
 
 	w += 2; /* 1px padding on both sides */
-	ret = x = m->ww - w;
+	ret = m->ww - w;
+  x = m->ww - w - getsystraywidth();
 
 	drw_setscheme(drw, scheme[LENGTH(colors)]);
 	drw->scheme[ColFg] = scheme[SchemeNorm][ColFg];
