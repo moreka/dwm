@@ -72,6 +72,8 @@ static const Rule rules[] = {
 	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
   { "zoom",     NULL,       NULL,       0,            1,           -1 },
+  { "Matplotlib",     NULL,       NULL,       0,            1,           -1 },
+  { "smallvim",     NULL,       NULL,       0,            1,           -1 },
 };
 
 /* layout(s) */
@@ -106,6 +108,8 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "alacritty", "-T", scratchpadname, "--option", "window.dimensions.columns=120", "--option", "window.dimensions.lines=34", NULL };
+/* static const char *lockcmd[] = { "i3lock", "-c", "1f1f1fff", NULL }; */
+static const char *lockcmd[] = { "betterlockscreen", "-l", "blur", NULL };
 
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
@@ -148,7 +152,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 	{ MODKEY|ShiftMask,             XK_r,      quit,           {1} },
 
-  { MODKEY,                       XK_x,      spawn,          {.v = (const char*[]){ "i3lock", "-c", "1f1f1fff", NULL } } },
+  { MODKEY,                       XK_x,      spawn,          {.v = lockcmd } },
   { MODKEY,                       XK_z,      spawn,          {.v = (const char*[]){ "rofi", "-show", "window", NULL } } },
 
   { MODKEY,	                  		XK_w,	     spawn,          {.v = (const char*[]){ "firefox", NULL } } },
